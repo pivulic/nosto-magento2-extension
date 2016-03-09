@@ -25,33 +25,3 @@
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
-namespace Nosto\Tagging\Model\Category;
-
-use Magento\Framework\ObjectManagerInterface;
-
-class Factory
-{
-    /**
-     * @var ObjectManagerInterface
-     */
-    protected $_objectManager;
-
-    /**
-     * @param ObjectManagerInterface $objectManager
-     */
-    public function __construct(ObjectManagerInterface $objectManager)
-    {
-        $this->_objectManager = $objectManager;
-    }
-
-    /**
-     * Create new product object.
-     *
-     * @param array $data
-     * @return \NostoCategory
-     */
-    public function create(array $data = [])
-    {
-        return $this->_objectManager->create('NostoCategory', $data);
-    }
-}

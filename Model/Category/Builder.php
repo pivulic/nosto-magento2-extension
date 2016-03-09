@@ -28,16 +28,16 @@
 namespace Nosto\Tagging\Model\Category;
 
 use Magento\Catalog\Api\CategoryRepositoryInterface;
+use Magento\Catalog\Api\Data\CategoryInterface;
 use Magento\Catalog\Model\Category;
-use Nosto\Tagging\Model\Category\Factory as CategoryFactory;
 use Psr\Log\LoggerInterface;
 
 class Builder
 {
     /**
-     * @var CategoryFactory
+     * @var CategoryRepositoryInterface
      */
-    protected $_categoryFactory;
+    protected $_categoryRepository;
 
     /**
      * @var LoggerInterface
@@ -45,27 +45,25 @@ class Builder
     protected $_logger;
 
     /**
-     * @param CategoryFactory $productFactory
      * @param CategoryRepositoryInterface $categoryRepository
      * @param LoggerInterface $logger
      */
     public function __construct(
-        CategoryFactory $productFactory,
         CategoryRepositoryInterface $categoryRepository,
         LoggerInterface $logger
     ) {
-        $this->_categoryFactory = $productFactory;
         $this->_categoryRepository = $categoryRepository;
         $this->_logger = $logger;
     }
 
     /**
-     * @param Category $category
+     * @param CategoryInterface $category
      * @return \NostoCategory
      */
-    public function build(Category $category)
+    public function build(CategoryInterface $category)
     {
-        $nostoCategory = $this->_categoryFactory->create();
+
+        $nostoCategory = new \NostoCategory();
 
         try {
             $nostoCategory->setPath($this->buildPath($category));
@@ -77,13 +75,13 @@ class Builder
     }
 
     /**
-     * @param Category $category
+     * @param CategoryInterface $category
      * @return string
      */
-    protected function buildPath(Category $category)
+    protected function buildPath(CategoryInterface $fromCategory)
     {
         $data = [];
-        $path = $category->getPath();
+        $path = $fromCategory->getPath();
         foreach (explode('/', $path) as $categoryId) {
             $category = $this->_categoryRepository->get($categoryId);
             if ($category && $category->getLevel() > 1) {
